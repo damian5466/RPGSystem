@@ -23,6 +23,7 @@ public class RPGPlayer {
     private Player bukkitPlayer;
     private PlayerStats stats;
     private File dataFile;
+    private String className;
 
     //Create RPGPlayer instance for connected player, called only on join.
     private RPGPlayer(Player player) {
@@ -44,6 +45,7 @@ public class RPGPlayer {
     public void saveData() {
         Log.info("PlayerData", "Saving data...");
         YamlConfiguration data = YamlConfiguration.loadConfiguration(dataFile);
+        data.set("className", className);
         ConfigurationSection statsSection = data.createSection("Stats");
         statsSection.set("hp", stats.getHp());
         statsSection.set("armor", stats.getArmor());
@@ -71,9 +73,13 @@ public class RPGPlayer {
         ConfigurationSection statsSection = data.getConfigurationSection("Stats");
         if(statsSection == null) {
             stats = PlayerClasses.DEFAULT.getStats();
+            className = "Default";
             Log.info("PlayerData", "New Player detected! Creating default data.");
+            //If player hasn't played before, we need him to select his class
+            PlayerClasses.showClassSelector(bukkitPlayer);
             return;
         }
+        className = data.getString("className");
         double hp = statsSection.getDouble("hp");
         double armor = statsSection.getDouble("armor");
         double dodgeChance = statsSection.getDouble("dodgeChance");
