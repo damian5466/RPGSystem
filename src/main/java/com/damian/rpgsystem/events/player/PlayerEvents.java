@@ -1,5 +1,6 @@
 package com.damian.rpgsystem.events.player;
 
+import com.damian.rpgsystem.extensions.player.PlayerClasses;
 import com.damian.rpgsystem.extensions.player.RPGPlayer;
 import fr.xephi.authme.events.LoginEvent;
 import org.bukkit.event.EventHandler;
@@ -26,6 +27,11 @@ public class PlayerEvents implements Listener {
     //Giving player his stats after successful login
     @EventHandler
     public void onLogin(LoginEvent e) {
-        RPGPlayer.get(e.getPlayer()).applyStats();
+        RPGPlayer rpgPlayer = RPGPlayer.get(e.getPlayer());
+        //If a player hasn't played before or hasn't chosen a class we need him to do so
+        if(rpgPlayer.getClassName().equals("Default")) {
+            PlayerClasses.showClassSelector(rpgPlayer.getBukkitPlayer());
+        }
+        rpgPlayer.applyStats();
     }
 }

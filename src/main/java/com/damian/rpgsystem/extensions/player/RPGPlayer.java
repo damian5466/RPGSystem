@@ -75,8 +75,6 @@ public class RPGPlayer {
             stats = PlayerClasses.DEFAULT.getStats();
             className = "Default";
             Log.info("PlayerData", "New Player detected! Creating default data.");
-            //If player hasn't played before, we need him to select his class
-            PlayerClasses.showClassSelector(bukkitPlayer);
             return;
         }
         className = data.getString("className");
@@ -119,6 +117,10 @@ public class RPGPlayer {
         return null;
     }
 
+    public static List<RPGPlayer> getPlayers() {
+        return new ArrayList<>(players);
+    }
+
     public static void remove(RPGPlayer rpgPlayer) {
         players.remove(rpgPlayer);
         Log.info("RPGPlayer", "Removing player: " + rpgPlayer.getBukkitPlayer().getName());
@@ -140,5 +142,17 @@ public class RPGPlayer {
 
     public PlayerStats getStats() {
         return stats;
+    }
+
+    public void setStats(PlayerStats stats) {
+        this.stats = stats;
+    }
+
+    public String getClassName() {
+        return className;
+    }
+
+    public void setClass(String className) {
+        this.className = className;
     }
 }
