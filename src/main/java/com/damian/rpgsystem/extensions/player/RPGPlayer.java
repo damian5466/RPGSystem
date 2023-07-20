@@ -17,23 +17,30 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class RPGPlayer {
+    //Current players list
     private static List<RPGPlayer> players = new ArrayList<>();
 
     private Player bukkitPlayer;
     private PlayerStats stats;
     private File dataFile;
 
+    //Create RPGPlayer instance for connected player, called only on join.
     private RPGPlayer(Player player) {
         this.bukkitPlayer = player;
+        //Getting information from player data file
         dataFile = FileManager.getFile("PlayerData/" + player.getName() + ".rpg");
+        //If player doesn't have data we have to create one for him
         if(dataFile == null) {
             dataFile = FileManager.createDataFile("PlayerData/" + player.getName() + ".rpg");
         }
+        //Loading data from player file
         loadData(dataFile);
+        //Adding player to current players list
         players.add(this);
         Log.info("RPGPlayer", "Adding new player: " + bukkitPlayer.getName());
     }
 
+    //region PlayerData
     public void saveData() {
         Log.info("PlayerData", "Saving data...");
         YamlConfiguration data = YamlConfiguration.loadConfiguration(dataFile);
@@ -88,7 +95,9 @@ public class RPGPlayer {
         stats = new PlayerStats(hp, armor, dodgeChance, damage, attackSpeed, speed, modifier);
         Log.info("PlayerData", "Data loaded from file!");
     }
+    //endregion
 
+    //region Static methods
     public static RPGPlayer create(Player player) {
         RPGPlayer rpgPlayer = get(player);
         if(rpgPlayer == null) {
@@ -108,11 +117,13 @@ public class RPGPlayer {
         players.remove(rpgPlayer);
         Log.info("RPGPlayer", "Removing player: " + rpgPlayer.getBukkitPlayer().getName());
     }
+    //endregion
 
     public Player getBukkitPlayer() {
         return bukkitPlayer;
     }
 
+    //Giving player stats from his data
     public void applyStats() {
         bukkitPlayer.getAttribute(Attribute.GENERIC_MAX_HEALTH).setBaseValue(stats.getHp());
         bukkitPlayer.getAttribute(Attribute.GENERIC_ARMOR).setBaseValue(stats.getArmor());
