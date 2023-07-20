@@ -1,0 +1,11 @@
+name: RPGSystem
+version: '${project.version}'
+main: com.damian.rpgsystem.Main
+api-version: "1.20"
+load: STARTUP
+dependencies:
+  - name: AuthMe
+    required: true
+authors: [damian5466]
+description: Plugin for managing an RPG aspect of the server.
+website: harmonyrpg.pl
