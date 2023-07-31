@@ -2,14 +2,10 @@ package com.damian.rpgsystem.extensions.player;
 
 import com.damian.rpgsystem.FileManager;
 import com.damian.rpgsystem.Log;
-import com.damian.rpgsystem.Main;
-import com.google.common.math.Stats;
-import org.bukkit.Bukkit;
 import org.bukkit.attribute.Attribute;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.Player;
-import org.w3c.dom.Attr;
 
 import java.io.File;
 import java.io.IOException;
@@ -31,7 +27,7 @@ public class RPGPlayer {
         //Getting information from player data file
         dataFile = FileManager.getFile("PlayerData/" + player.getName() + ".rpg");
         //If player doesn't have data we have to create one for him
-        if(dataFile == null) {
+        if (dataFile == null) {
             dataFile = FileManager.createDataFile("PlayerData/" + player.getName() + ".rpg");
         }
         //Loading data from player file
@@ -39,6 +35,32 @@ public class RPGPlayer {
         //Adding player to current players list
         players.add(this);
         Log.info("RPGPlayer", "Adding new player: " + bukkitPlayer.getName());
+    }
+
+    //region Static methods
+    public static RPGPlayer create(Player player) {
+        RPGPlayer rpgPlayer = get(player);
+        if (rpgPlayer == null) {
+            return new RPGPlayer(player);
+        }
+        return rpgPlayer;
+    }
+
+    public static RPGPlayer get(Player player) {
+        for (RPGPlayer pl : players) {
+            if (pl.getBukkitPlayer().getUniqueId().equals(player.getUniqueId())) return pl;
+        }
+        return null;
+    }
+    //endregion
+
+    public static List<RPGPlayer> getPlayers() {
+        return new ArrayList<>(players);
+    }
+
+    public static void remove(RPGPlayer rpgPlayer) {
+        players.remove(rpgPlayer);
+        Log.info("RPGPlayer", "Removing player: " + rpgPlayer.getBukkitPlayer().getName());
     }
 
     //region PlayerData
@@ -62,8 +84,7 @@ public class RPGPlayer {
         try {
             data.save(dataFile);
             Log.info("PlayerData", "Data saved!");
-        }
-        catch (IOException e) {
+        } catch (IOException e) {
             Log.throwError("RPGPlayer", "saveData", e);
         }
     }
@@ -71,7 +92,7 @@ public class RPGPlayer {
     private void loadData(File dataFile) {
         YamlConfiguration data = YamlConfiguration.loadConfiguration(dataFile);
         ConfigurationSection statsSection = data.getConfigurationSection("Stats");
-        if(statsSection == null) {
+        if (statsSection == null) {
             stats = PlayerClasses.DEFAULT.getStats();
             className = "Default";
             Log.info("PlayerData", "New Player detected! Creating default data.");
@@ -98,32 +119,6 @@ public class RPGPlayer {
         modifier.setSpeedModifier(speedModifier);
         stats = new PlayerStats(hp, armor, dodgeChance, damage, attackSpeed, speed, modifier);
         Log.info("PlayerData", "Data loaded from file!");
-    }
-    //endregion
-
-    //region Static methods
-    public static RPGPlayer create(Player player) {
-        RPGPlayer rpgPlayer = get(player);
-        if(rpgPlayer == null) {
-            return new RPGPlayer(player);
-        }
-        return rpgPlayer;
-    }
-
-    public static RPGPlayer get(Player player) {
-        for(RPGPlayer pl: players) {
-            if(pl.getBukkitPlayer().getUniqueId().equals(player.getUniqueId())) return pl;
-        }
-        return null;
-    }
-
-    public static List<RPGPlayer> getPlayers() {
-        return new ArrayList<>(players);
-    }
-
-    public static void remove(RPGPlayer rpgPlayer) {
-        players.remove(rpgPlayer);
-        Log.info("RPGPlayer", "Removing player: " + rpgPlayer.getBukkitPlayer().getName());
     }
     //endregion
 

@@ -28,11 +28,11 @@ public enum PlayerClasses {
 
     public static void showClassSelector(Player p) {
         Inventory gui = Bukkit.createInventory(null, 9, Component.text("Select class").color(NamedTextColor.DARK_RED));
-        for(PlayerClasses playerClass: PlayerClasses.values()) {
+        for (PlayerClasses playerClass : PlayerClasses.values()) {
             String l1 = playerClass.name().substring(0, 1);
             String l2 = playerClass.name().substring(1).toLowerCase();
             String name = l1 + l2;
-            if(playerClass.guiMaterial == null) continue;
+            if (playerClass.guiMaterial == null) continue;
             ItemStack guiItem = new ItemStack(playerClass.guiMaterial);
             ItemMeta meta = guiItem.getItemMeta();
             meta.displayName(Component.text(name).color(NamedTextColor.GOLD));

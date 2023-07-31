@@ -7,12 +7,17 @@ import org.bukkit.plugin.java.JavaPlugin;
 
 public final class Main extends JavaPlugin {
 
+    private static Main instance;
+
+    public static JavaPlugin getInstance() {
+        return instance;
+    }
+
     @Override
     public void onLoad() {
         setupData();
     }
 
-    private static Main instance;
     @Override
     public void onEnable() {
         instance = this;
@@ -21,7 +26,7 @@ public final class Main extends JavaPlugin {
 
     @Override
     public void onDisable() {
-        for(RPGPlayer rpgPlayer: RPGPlayer.getPlayers()) {
+        for (RPGPlayer rpgPlayer : RPGPlayer.getPlayers()) {
             rpgPlayer.saveData();
         }
     }
@@ -32,12 +37,8 @@ public final class Main extends JavaPlugin {
     }
 
     private void setupData() {
-        if(!getDataFolder().exists()) {
+        if (!getDataFolder().exists()) {
             getDataFolder().mkdir();
         }
-    }
-
-    public static JavaPlugin getInstance() {
-        return instance;
     }
 }
